@@ -1,6 +1,6 @@
 import express from 'express'
 const app = express()
-const port = 3001
+const port = 3002
 import{router} from  './route.js'
 
 app.use(express.json())

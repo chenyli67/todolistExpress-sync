@@ -6,34 +6,29 @@ constructor(){
     this.todoList= [];
 }
 
-add(todoContent,callback){ 
+add(todoContent){ 
     this.todoList.push(new Todo(todoContent));
-   var todo = this.todoList[this.todoList.length-1];
-   callback(todo);
-
-}
+    return Promise.resolve(this.todoList[this.todoList.length-1]);
+    }
 
 get length(){
     return this.todoList.length;
 }
 
-queryToDo(id,callback){
-   var todo = this.todoList.find((todo)=>{
-        return todo.id == id;
-   });
-   callback(todo);
+queryToDo(id){
+  return Promise.resolve(this.todoList.find((todo)=>{
+    return todo.id == id}));
 }
 
-queryToDos(callback){
-    callback(this.todoList);
+queryToDos(){
+    return Promise.resolve(this.todoList);
 }
 
-delete(id,callback){
-     this.todoList = this.todoList.filter((todo)=>{
-        return todo.id != id;
-    });
-    callback(this.todoList);
+delete(id){
+    return Promise.resolve(this.todoList = this.todoList.filter((todo)=>{
+        return todo.id != id;}))
 }
+
 
 }
 

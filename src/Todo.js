@@ -20,6 +20,15 @@ export default class Todo {
         this.content = newContent;
         this.updateAt = timeTransfer.timestampToTime(Date.now());
     }
+    modifyStatusAndContent(newContent,status){
+
+        if(newContent!=undefined && newContent!=null){
+            Promise.resolve(this.modifyContent(newContent));
+        }
+        if(status !=undefined && status!=null){
+            Promise.resolve(this.done(status));
+        }
+    }
 
 
 }

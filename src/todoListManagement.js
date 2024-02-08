@@ -1,76 +1,82 @@
 import TodoList from './todoList.js'
-import Todo from './Todo.js'
 const todoList =  new TodoList();
-
+const ID_EMPTY_EXCEPTION="The id can't be empty";
+const TODO_NOT_FOUND = "can't find the todo";
 export default class todoListManagement{
 
- addToDoList(req,res) {
+ async addToDoList(req,res) {
+    try{
     if(req.body.content === undefined || req.body.content === null ){
-        res.status(400).send("The todo content can't be empty")
-        return;
-    }
-    todoList.add(req.body.content,(todo)=>{
-        res.send(todo);
-    });
-}
-
-queryToDo(req,res){
-    if(req.params.id ===undefined || req.params.id === null){
-        res.status(400).send("The id can't be empty");
-    }
-    todoList.queryToDo(req.params.id,(todo)=>{
-        console.log(JSON.stringify(todo));
-    if(JSON.stringify(todo)===undefined){
-        res.status(404).send("can't find the todo,please check the id");
-    }
+        throw "the body can not be empty"}
+    var todo = await  todoList.add(req.body.content);
     res.send(todo);
-    });
+    }catch(err){
+        res.status(404).send(err);
+    }
 }
 
-queryToDos(req,res){
-     todoList.queryToDos((todos)=>{
-        console.log(todos);
-    if(JSON.stringify(todos)=="[]"){
-        res.send("There is no have todo");
-    }
-    res.send(todos);
-    });
-}
-remove(req,res){
-    if(req.params.id ===undefined || req.params.id === null){
-        res.status(400).send("The id can't be empty");
-    }
-    todoList.queryToDo(req.params.id,(todo)=>{
-        if(todo){
-            todoList.delete(req.params.id,(todos)=>{
-                res.send(todos);
-            });
-        }else{
-            res.status(404).send("can't find the todo,please check the id");
+async queryToDo(req,res){
+    try{
+        if(req.params.id ===undefined || req.params.id === null){
+            throw ID_EMPTY_EXCEPTION;
         }
-    });
-}
-modify(req,res){
-    console.log('开始更新操作');
-    if(req.body.id===undefined || req.body.id ===null){
-        res.status(400).send("please check the todo id")
+        var todo =  await todoList.queryToDo(req.params.id);
+        if(JSON.stringify(todo)===undefined){
+            throw TODO_NOT_FOUND;
+        }
+        res.send(todo);
+    }catch(err){
+        res.send(err);
     }
-    const toDoId = req.body.id;
-    console.log(toDoId);
-     todoList.queryToDo(toDoId,(originalToDo)=>{
-        console.log(originalToDo)
-    if(originalToDo){
-        if(req.body.content!=undefined && req.body.content!=null){
-            originalToDo.modifyContent(req.body.content);};
-        if(req.body.isDone !=undefined && (req.body.isDone!=null)){
-            originalToDo.done(req.body.isDone)};
-                res.send(originalToDo);
-        console.log(todoList);
-        console.log(originalToDo);
-    }else{
-        res.status(404).send("can't find the todo,please check the id")}
-    });
 }
+
+async queryToDos(req,res){
+    try{
+        var todos =await  todoList.queryToDos();
+        if(JSON.stringify(todos)=="[]"){
+            throw TODO_NOT_FOUND;
+        }
+        res.send(todos);
+    }catch(err){
+        res.send(err);
+    }
+       
+}
+
+ async remove(req,res){
+    try{
+        if(req.params.id ===undefined || req.params.id === null){
+           throw ID_EMPTY_EXCEPTION;
+        }
+        var todo = await todoList.queryToDo(req.params.id);
+        if(todo){
+            res.send(await todoList.delete(req.params.id));
+        }else{
+            throw TODO_NOT_FOUND;
+        }
+    }catch(err){
+        res.send(err);
+    }
 }
 
 
+async modify(req,res){
+    try{
+        if(req.body.id===undefined || req.body.id ===null){
+           throw ID_EMPTY_EXCEPTION;
+        }
+        var originalToDo =await todoList.queryToDo(req.body.id);
+        if(originalToDo){
+            originalToDo.modifyStatusAndContent(req.body.content,req.body.isDone)
+            res.send(originalToDo);
+        }else{
+            throw TODO_NOT_FOUND;
+        }
+    }catch(err){
+        res.send(err);
+    }
+}
+
+}
+
+    
