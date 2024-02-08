@@ -6,34 +6,35 @@ constructor(){
     this.todoList= [];
 }
 
-add(todoContent){ 
+add(todoContent,callback){ 
     this.todoList.push(new Todo(todoContent));
-    return this.todoList[this.todoList.length-1];
+   var todo = this.todoList[this.todoList.length-1];
+   callback(todo);
+
 }
 
 get length(){
     return this.todoList.length;
 }
 
-queryToDo(id){
-   return this.todoList.find((todo)=>{
+queryToDo(id,callback){
+   var todo = this.todoList.find((todo)=>{
         return todo.id == id;
    });
+   callback(todo);
 }
 
-queryToDos(){
-    return this.todoList;
+queryToDos(callback){
+    callback(this.todoList);
 }
 
-delete(id){
-    return this.todoList = this.todoList.filter((todo)=>{
+delete(id,callback){
+     this.todoList = this.todoList.filter((todo)=>{
         return todo.id != id;
-    })
+    });
+    callback(this.todoList);
 }
 
-// modify(id,newContent){
-//     return Object.assign(this.todoList[id-1],newContent);
-// }
 }
 
 

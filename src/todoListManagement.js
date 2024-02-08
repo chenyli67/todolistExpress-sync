@@ -9,40 +9,46 @@ export default class todoListManagement{
         res.status(400).send("The todo content can't be empty")
         return;
     }
-    var todo = todoList.add(req.body.content);
-    res.send(todo);
+    todoList.add(req.body.content,(todo)=>{
+        res.send(todo);
+    });
 }
 
 queryToDo(req,res){
     if(req.params.id ===undefined || req.params.id === null){
         res.status(400).send("The id can't be empty");
     }
-    var todo = todoList.queryToDo(req.params.id);
-    console.log(JSON.stringify(todo));
+    todoList.queryToDo(req.params.id,(todo)=>{
+        console.log(JSON.stringify(todo));
     if(JSON.stringify(todo)===undefined){
         res.status(404).send("can't find the todo,please check the id");
     }
     res.send(todo);
+    });
 }
 
 queryToDos(req,res){
-    var todos = todoList.queryToDos();
-    console.log(todos);
-        if(JSON.stringify(todos)=="[]"){
+     todoList.queryToDos((todos)=>{
+        console.log(todos);
+    if(JSON.stringify(todos)=="[]"){
         res.send("There is no have todo");
     }
     res.send(todos);
+    });
 }
 remove(req,res){
     if(req.params.id ===undefined || req.params.id === null){
         res.status(400).send("The id can't be empty");
     }
-    var todo = todoList.queryToDo(req.params.id);
-    if(todo){
-        res.send(todoList.delete(req.params.id));
-    }else{
-        res.status(404).send("can't find the todo,please check the id");
-    }
+    todoList.queryToDo(req.params.id,(todo)=>{
+        if(todo){
+            todoList.delete(req.params.id,(todos)=>{
+                res.send(todos);
+            });
+        }else{
+            res.status(404).send("can't find the todo,please check the id");
+        }
+    });
 }
 modify(req,res){
     console.log('开始更新操作');
@@ -51,20 +57,20 @@ modify(req,res){
     }
     const toDoId = req.body.id;
     console.log(toDoId);
-    var originalToDo = todoList.queryToDo(toDoId);
-    console.log(originalToDo)
+     todoList.queryToDo(toDoId,(originalToDo)=>{
+        console.log(originalToDo)
     if(originalToDo){
         if(req.body.content!=undefined && req.body.content!=null){
-            originalToDo.modifyContent(req.body.content);
-        }
+            originalToDo.modifyContent(req.body.content);};
         if(req.body.isDone !=undefined && (req.body.isDone!=null)){
-            originalToDo.done(req.body.isDone);
-        }
-        res.send(originalToDo);
+            originalToDo.done(req.body.isDone)};
+                res.send(originalToDo);
         console.log(todoList);
+        console.log(originalToDo);
     }else{
         res.status(404).send("can't find the todo,please check the id")}
-    }
+    });
+}
 }
 
 
