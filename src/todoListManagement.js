@@ -1,13 +1,14 @@
 import TodoList from './todoList.js'
 const todoList =  new TodoList();
+const BODY_EMPTY_EXCEPTION = "The body can not be empty";
 const ID_EMPTY_EXCEPTION="The id can't be empty";
-const TODO_NOT_FOUND = "can't find the todo";
+const TODO_NOT_FOUND = "Can't find the todo";
 export default class todoListManagement{
 
  async addToDoList(req,res) {
     try{
     if(req.body.content === undefined || req.body.content === null ){
-        throw "the body can not be empty"}
+        throw BODY_EMPTY_EXCEPTION;}
     var todo = await  todoList.add(req.body.content);
     res.send(todo);
     }catch(err){
