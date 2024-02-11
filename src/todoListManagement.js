@@ -1,13 +1,14 @@
 import TodoList from './todoList.js'
-import Todo from './Todo.js'
 const todoList =  new TodoList();
+const CONTENT_EMPTY_EXCEPTION = "The todo content can't be empty";
+const ID_EMPTY_EXCEPTION = "The id can't be empty";
+const TODO_NOT_FOUND = "Can't find the todo";
 
 export default class todoListManagement{
 
  addToDoList(req,res) {
     if(req.body.content === undefined || req.body.content === null ){
-        res.status(400).send("The todo content can't be empty")
-        return;
+        res.status(400).send(CONTENT_EMPTY_EXCEPTION)
     }
     var todo = todoList.add(req.body.content);
     res.send(todo);
@@ -15,12 +16,12 @@ export default class todoListManagement{
 
 queryToDo(req,res){
     if(req.params.id ===undefined || req.params.id === null){
-        res.status(400).send("The id can't be empty");
+        res.status(400).send(ID_EMPTY_EXCEPTION);
     }
     var todo = todoList.queryToDo(req.params.id);
     console.log(JSON.stringify(todo));
     if(JSON.stringify(todo)===undefined){
-        res.status(404).send("can't find the todo,please check the id");
+        res.status(404).send(TODO_NOT_FOUND);
     }
     res.send(todo);
 }
@@ -29,30 +30,29 @@ queryToDos(req,res){
     var todos = todoList.queryToDos();
     console.log(todos);
         if(JSON.stringify(todos)=="[]"){
-        res.send("There is no have todo");
+        res.send(TODO_NOT_FOUND);
     }
     res.send(todos);
 }
+
 remove(req,res){
     if(req.params.id ===undefined || req.params.id === null){
-        res.status(400).send("The id can't be empty");
+        res.status(400).send(ID_EMPTY_EXCEPTION);
     }
     var todo = todoList.queryToDo(req.params.id);
     if(todo){
         res.send(todoList.delete(req.params.id));
     }else{
-        res.status(404).send("can't find the todo,please check the id");
+        res.status(404).send(TODO_NOT_FOUND);
     }
 }
+
 modify(req,res){
-    console.log('开始更新操作');
     if(req.body.id===undefined || req.body.id ===null){
-        res.status(400).send("please check the todo id")
+        res.status(400).send(ID_EMPTY_EXCEPTION)
     }
     const toDoId = req.body.id;
-    console.log(toDoId);
     var originalToDo = todoList.queryToDo(toDoId);
-    console.log(originalToDo)
     if(originalToDo){
         if(req.body.content!=undefined && req.body.content!=null){
             originalToDo.modifyContent(req.body.content);
@@ -61,9 +61,8 @@ modify(req,res){
             originalToDo.done(req.body.isDone);
         }
         res.send(originalToDo);
-        console.log(todoList);
     }else{
-        res.status(404).send("can't find the todo,please check the id")}
+        res.status(404).send(TODO_NOT_FOUND)}
     }
 }
 

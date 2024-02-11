@@ -31,9 +31,6 @@ delete(id){
     })
 }
 
-// modify(id,newContent){
-//     return Object.assign(this.todoList[id-1],newContent);
-// }
 }
 
 
