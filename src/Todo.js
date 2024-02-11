@@ -23,10 +23,10 @@ export default class Todo {
     modifyStatusAndContent(newContent,status){
 
         if(newContent!=undefined && newContent!=null){
-            Promise.resolve(this.modifyContent(newContent));
+            this.modifyContent(newContent)
         }
         if(status !=undefined && status!=null){
-            Promise.resolve(this.done(status));
+            this.done(status)
         }
     }
 

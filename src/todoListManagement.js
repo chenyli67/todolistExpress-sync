@@ -21,7 +21,7 @@ async queryToDo(req,res){
         if(req.params.id ===undefined || req.params.id === null){
             throw ID_EMPTY_EXCEPTION;
         }
-        var todo =  await todoList.queryToDo(req.params.id);
+        var todo = await todoList.queryToDo(req.params.id);
         if(JSON.stringify(todo)===undefined){
             throw TODO_NOT_FOUND;
         }
@@ -68,7 +68,7 @@ async modify(req,res){
         }
         var originalToDo =await todoList.queryToDo(req.body.id);
         if(originalToDo){
-            originalToDo.modifyStatusAndContent(req.body.content,req.body.isDone)
+             originalToDo.modifyStatusAndContent(req.body.content,req.body.isDone)
             res.send(originalToDo);
         }else{
             throw TODO_NOT_FOUND;
