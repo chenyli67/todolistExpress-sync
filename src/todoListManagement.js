@@ -1,13 +1,14 @@
 import TodoList from './todoList.js'
-import Todo from './Todo.js'
+const CONTENT_EMPTY_EXCEPTION = "The todo content can't be empty";
+const ID_EMPTY_EXCEPTION = "The id can't be empty";
+const TODO_NOT_FOUND = "Can't find the todo";
 const todoList =  new TodoList();
 
 export default class todoListManagement{
 
  addToDoList(req,res) {
     if(req.body.content === undefined || req.body.content === null ){
-        res.status(400).send("The todo content can't be empty")
-        return;
+        res.status(400).send(CONTENT_EMPTY_EXCEPTION);
     }
     todoList.add(req.body.content,(todo)=>{
         res.send(todo);
@@ -16,12 +17,12 @@ export default class todoListManagement{
 
 queryToDo(req,res){
     if(req.params.id ===undefined || req.params.id === null){
-        res.status(400).send("The id can't be empty");
+
+        res.status(400).send(ID_EMPTY_EXCEPTION);
     }
     todoList.queryToDo(req.params.id,(todo)=>{
-        console.log(JSON.stringify(todo));
     if(JSON.stringify(todo)===undefined){
-        res.status(404).send("can't find the todo,please check the id");
+        res.status(404).send(TODO_NOT_FOUND);
     }
     res.send(todo);
     });
@@ -29,16 +30,16 @@ queryToDo(req,res){
 
 queryToDos(req,res){
      todoList.queryToDos((todos)=>{
-        console.log(todos);
     if(JSON.stringify(todos)=="[]"){
-        res.send("There is no have todo");
+        res.send(TODO_NOT_FOUND);
     }
     res.send(todos);
     });
 }
+
 remove(req,res){
     if(req.params.id ===undefined || req.params.id === null){
-        res.status(400).send("The id can't be empty");
+        res.status(400).send(ID_EMPTY_EXCEPTION);
     }
     todoList.queryToDo(req.params.id,(todo)=>{
         if(todo){
@@ -46,29 +47,25 @@ remove(req,res){
                 res.send(todos);
             });
         }else{
-            res.status(404).send("can't find the todo,please check the id");
+            res.status(404).send(TODO_NOT_FOUND);
         }
     });
 }
+
 modify(req,res){
-    console.log('开始更新操作');
     if(req.body.id===undefined || req.body.id ===null){
-        res.status(400).send("please check the todo id")
+        res.status(400).send(ID_EMPTY_EXCEPTION)
     }
     const toDoId = req.body.id;
-    console.log(toDoId);
      todoList.queryToDo(toDoId,(originalToDo)=>{
-        console.log(originalToDo)
     if(originalToDo){
         if(req.body.content!=undefined && req.body.content!=null){
             originalToDo.modifyContent(req.body.content);};
         if(req.body.isDone !=undefined && (req.body.isDone!=null)){
             originalToDo.done(req.body.isDone)};
                 res.send(originalToDo);
-        console.log(todoList);
-        console.log(originalToDo);
     }else{
-        res.status(404).send("can't find the todo,please check the id")}
+        res.status(404).send(TODO_NOT_FOUND);}
     });
 }
 }
