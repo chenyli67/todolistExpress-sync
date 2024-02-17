@@ -1,5 +1,5 @@
 import express from 'express'
-import todoListManagement from './src/todoListManagement.js'
+import todoListManagement from '../src/todoListManagement.js'
 var todoList = new todoListManagement();
 
 
